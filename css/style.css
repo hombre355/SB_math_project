@@ -1434,6 +1434,14 @@ body {
   margin: 8px 0;
 }
 
+.app-version {
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  margin-top: -8px;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+
 /* ================================
    PARENT MODE
    ================================ */

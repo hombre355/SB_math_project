@@ -57,6 +57,7 @@ const App = {
             </div>
           </div>
           <h1 class="rainbow-text">Sarah-Beth's Math Adventure!</h1>
+          <div class="app-version">v1.0</div>
           <div class="speech-bubble">
             <p>Hi ${this.state.settings.name}! I'm <strong>Twinkle the Unicorn</strong>!</p>
             <p>I'm going to help you become a math superstar!</p>
