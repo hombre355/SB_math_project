@@ -587,6 +587,56 @@ body {
   background: rgba(167, 139, 250, 0.08);
 }
 
+.answer-box.active {
+  border-style: solid;
+  border-color: var(--purple-dark);
+  background: rgba(124, 58, 237, 0.12);
+  animation: column-pulse 0.85s ease-in-out infinite;
+}
+
+.answer-box.locked {
+  border-style: solid;
+  border-color: #059669;
+  background: rgba(110, 231, 183, 0.3);
+  color: #047857;
+}
+
+.carry-row {
+  min-height: 32px;
+  align-items: flex-end;
+}
+
+.carry-input-box {
+  min-width: 44px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: transparent;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.carry-input-box.active {
+  color: var(--gold-dark);
+  border-color: var(--gold-dark);
+  background: rgba(245, 158, 11, 0.12);
+  animation: column-pulse 0.85s ease-in-out infinite;
+}
+
+.carry-input-box.locked {
+  color: var(--gold-dark);
+  border: none;
+}
+
+@keyframes column-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
 .answer-box.filled {
   border-style: solid;
   background: rgba(167, 139, 250, 0.2);

@@ -140,6 +140,47 @@ const Problems = {
     };
   },
 
+  // Compute per-column answer digits and carry/borrow out for column-mode input
+  // Returns array indexed 0=ones, 1=tens, etc.
+  computeColumnData(num1, num2, operation) {
+    const answer = operation === '+' ? num1 + num2 : num1 - num2;
+    const totalCols = String(answer).length;
+    const sa = String(num1).split('').reverse();
+    const sb = String(num2).split('').reverse();
+    const columns = [];
+
+    if (operation === '+') {
+      let carry = 0;
+      for (let i = 0; i < totalCols; i++) {
+        const da = parseInt(sa[i] || '0', 10);
+        const db = parseInt(sb[i] || '0', 10);
+        const sum = da + db + carry;
+        const digit = sum % 10;
+        carry = Math.floor(sum / 10);
+        columns.push({ digit, carryOut: carry });
+      }
+    } else {
+      let borrow = 0;
+      for (let i = 0; i < totalCols; i++) {
+        const da = parseInt(sa[i] || '0', 10);
+        const db = parseInt(sb[i] || '0', 10);
+        const top = da - borrow;
+        let digit, borrowOut;
+        if (top < db) {
+          digit = top + 10 - db;
+          borrowOut = 1;
+        } else {
+          digit = top - db;
+          borrowOut = 0;
+        }
+        columns.push({ digit, carryOut: borrowOut });
+        borrow = borrowOut;
+      }
+    }
+
+    return columns;
+  },
+
   // Format number with place value labels for teaching
   getPlaceValues(num) {
     const names = ['Ones', 'Tens', 'Hundreds', 'Thousands', 'Ten-Thousands'];

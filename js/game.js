@@ -5,11 +5,17 @@ const Game = {
   currentProblem: null,
   currentAnswer: '',
   isShowingFeedback: false,
+  columnData: null,
+  columnIndex: 0,
+  columnPhase: 'answer', // 'answer' or 'carry'
 
   init(state) {
     this.state = state;
     this.currentAnswer = '';
     this.isShowingFeedback = false;
+    this.columnData = null;
+    this.columnIndex = 0;
+    this.columnPhase = 'answer';
   },
 
   startLevel(levelId) {
@@ -46,6 +52,9 @@ const Game = {
     this.currentProblem = Problems.generate(config);
     this.currentAnswer = '';
     this.isShowingFeedback = false;
+    this.columnData = null;
+    this.columnIndex = 0;
+    this.columnPhase = 'answer';
 
     const maxDigits = Math.max(
       String(this.currentProblem.num1).length,
@@ -67,6 +76,13 @@ const Game = {
         this.currentProblem.operation,
         maxDigits + 1 // extra space for carry
       );
+      // Init column-by-column input state
+      this.columnData = Problems.computeColumnData(
+        this.currentProblem.num1,
+        this.currentProblem.num2,
+        this.currentProblem.operation
+      );
+      UI.highlightAnswerBox(0);
     } else {
       UI.show('#problem-horizontal');
       UI.hide('#problem-column');
@@ -75,26 +91,77 @@ const Game = {
         this.currentProblem.num2,
         this.currentProblem.operation
       );
+      UI.updateAnswerDisplay('', 'horizontal');
     }
-
-    UI.updateAnswerDisplay('', this.currentProblem.display);
   },
 
   inputDigit(digit) {
     if (this.isShowingFeedback) return;
-    Sounds.tap();
 
-    const maxLen = String(this.currentProblem.answer).length + 1;
-    if (this.currentAnswer.length >= maxLen) return;
+    if (this.currentProblem.display === 'column') {
+      this._inputColumnDigit(parseInt(digit, 10));
+    } else {
+      Sounds.tap();
+      const maxLen = String(this.currentProblem.answer).length + 1;
+      if (this.currentAnswer.length >= maxLen) return;
+      this.currentAnswer += String(digit);
+      UI.updateAnswerDisplay(this.currentAnswer, 'horizontal');
+    }
+  },
 
-    this.currentAnswer += String(digit);
-    UI.updateAnswerDisplay(this.currentAnswer, this.currentProblem.display);
+  _inputColumnDigit(digit) {
+    const col = this.columnData[this.columnIndex];
+
+    if (this.columnPhase === 'answer') {
+      if (digit !== col.digit) {
+        Sounds.wrong();
+        UI.shakeAnswerBox(this.columnIndex);
+        return;
+      }
+      Sounds.tap();
+      UI.lockAnswerDigit(this.columnIndex, digit);
+      // If there's a carry/borrow out and it's not the last column, prompt for it
+      if (col.carryOut && this.columnIndex < this.columnData.length - 1) {
+        this.columnPhase = 'carry';
+        UI.highlightCarryBox(this.columnIndex + 1);
+      } else {
+        this._advanceToNextColumn();
+      }
+    } else {
+      // carry phase — correct value is always 1
+      if (digit !== 1) {
+        Sounds.wrong();
+        UI.shakeCarryBox(this.columnIndex + 1);
+        return;
+      }
+      Sounds.tap();
+      UI.lockCarryDigit(this.columnIndex + 1);
+      this._advanceToNextColumn();
+    }
+  },
+
+  _advanceToNextColumn() {
+    this.columnIndex++;
+    this.columnPhase = 'answer';
+    if (this.columnIndex >= this.columnData.length) {
+      this._columnComplete();
+    } else {
+      UI.highlightAnswerBox(this.columnIndex);
+    }
+  },
+
+  _columnComplete() {
+    // All columns entered correctly — set answer and submit
+    this.currentAnswer = String(this.currentProblem.answer);
+    this.submit();
   },
 
   backspace() {
     if (this.isShowingFeedback) return;
+    // Backspace not used in column mode (digits are validated one at a time)
+    if (this.currentProblem.display === 'column') return;
     this.currentAnswer = this.currentAnswer.slice(0, -1);
-    UI.updateAnswerDisplay(this.currentAnswer, this.currentProblem.display);
+    UI.updateAnswerDisplay(this.currentAnswer, 'horizontal');
   },
 
   submit() {

@@ -95,6 +95,12 @@ const UI = {
     const placeNames = ['ones', 'tens', 'hundreds', 'thousands', 'ten-thousands'];
 
     let html = '<div class="column-problem">';
+    // Carry/borrow input row (above the numbers)
+    html += '<div class="column-row carry-row" id="carry-boxes">';
+    for (let i = 0; i < totalBoxes; i++) {
+      html += `<span class="carry-input-box" data-pos="${totalBoxes - 1 - i}"></span>`;
+    }
+    html += '</div>';
     // Place value labels
     html += '<div class="place-labels">';
     for (let i = maxDigits - 1; i >= 0; i--) {
@@ -169,6 +175,55 @@ const UI = {
         box.classList.toggle('filled', !!digit);
       });
     }
+  },
+
+  // Column-mode input helpers
+  // colIdx: 0=ones, 1=tens, … DOM is right-to-left so domIdx = boxes.length - 1 - colIdx
+
+  highlightAnswerBox(colIdx) {
+    const boxes = this.$$('#answer-boxes .answer-box');
+    boxes.forEach(b => b.classList.remove('active'));
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) boxes[domIdx].classList.add('active');
+  },
+
+  lockAnswerDigit(colIdx, digit) {
+    const boxes = this.$$('#answer-boxes .answer-box');
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) {
+      boxes[domIdx].textContent = String(digit);
+      boxes[domIdx].classList.remove('active');
+      boxes[domIdx].classList.add('locked');
+    }
+  },
+
+  shakeAnswerBox(colIdx) {
+    const boxes = this.$$('#answer-boxes .answer-box');
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) this.wiggle(boxes[domIdx]);
+  },
+
+  highlightCarryBox(colIdx) {
+    const boxes = this.$$('#carry-boxes .carry-input-box');
+    boxes.forEach(b => b.classList.remove('active'));
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) boxes[domIdx].classList.add('active');
+  },
+
+  lockCarryDigit(colIdx) {
+    const boxes = this.$$('#carry-boxes .carry-input-box');
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) {
+      boxes[domIdx].textContent = '1';
+      boxes[domIdx].classList.remove('active');
+      boxes[domIdx].classList.add('locked');
+    }
+  },
+
+  shakeCarryBox(colIdx) {
+    const boxes = this.$$('#carry-boxes .carry-input-box');
+    const domIdx = boxes.length - 1 - colIdx;
+    if (boxes[domIdx]) this.wiggle(boxes[domIdx]);
   },
 
   // Progress map
