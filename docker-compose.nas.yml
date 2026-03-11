@@ -1,0 +1,12 @@
+services:
+  math-adventure:
+    image: ghcr.io/hombre355/sb_math_project:latest
+    container_name: math-adventure
+    ports:
+      - "8080:80"
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
