@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Sarah-Beth's Math Adventure!</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦄</text></svg>">
+</head>
+<body>
+  <div id="app">
+    <!-- Floating background elements -->
+    <div class="bg-clouds">
+      <div class="cloud cloud-1"></div>
+      <div class="cloud cloud-2"></div>
+      <div class="cloud cloud-3"></div>
+    </div>
+    <div class="bg-sparkles" id="bg-sparkles"></div>
+
+    <!-- Confetti overlay -->
+    <div id="confetti-container"></div>
+
+    <!-- Header -->
+    <header id="app-header">
+      <div class="header-left">
+        <button class="btn btn-icon" onclick="App.goHome()" title="Home">&#x1F3E0;</button>
+      </div>
+      <div class="header-center">
+        <h1 class="app-title rainbow-text">Math Adventure</h1>
+      </div>
+      <div class="header-right">
+        <button class="btn btn-icon btn-read-aloud" id="read-aloud-btn" onclick="Speech.toggle()" title="Read aloud">&#x1F50A;</button>
+        <button class="btn btn-icon" onclick="App.showMap()" title="Progress">&#x1F5FA;&#xFE0F;</button>
+        <button class="btn btn-icon" onclick="App.showSettings()" title="Settings">&#x2699;&#xFE0F;</button>
+      </div>
+    </header>
+
+    <!-- Mascot speech bubble (floating) -->
+    <div id="mascot-area">
+      <div class="mascot" id="mascot">
+        <div class="unicorn small">
+          <div class="unicorn-horn"></div>
+          <div class="unicorn-head">
+            <div class="unicorn-eye left"></div>
+            <div class="unicorn-eye right"></div>
+            <div class="unicorn-mouth"></div>
+          </div>
+          <div class="unicorn-mane"></div>
+          <div class="unicorn-body"></div>
+        </div>
+      </div>
+      <div id="mascot-speech" class="speech-bubble mascot-bubble hidden"></div>
+    </div>
+
+    <!-- SCREENS -->
+
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen hidden">
+      <div id="welcome-content"></div>
+    </div>
+
+    <!-- Teaching Screen -->
+    <div id="teaching-screen" class="screen hidden">
+      <div id="teaching-content"></div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+      <div class="game-header">
+        <span id="game-level-label" class="level-label"></span>
+        <div id="streak-stars" class="streak-stars"></div>
+      </div>
+      <div id="game-area">
+        <div id="problem-horizontal" class="problem-display hidden"></div>
+        <div id="problem-column" class="problem-display hidden"></div>
+        <div id="feedback-area" class="hidden"></div>
+      </div>
+      <div id="number-pad" class="number-pad"></div>
+    </div>
+
+    <!-- Level Complete Screen -->
+    <div id="level-complete-screen" class="screen hidden">
+      <div id="level-complete-content"></div>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victory-screen" class="screen hidden">
+      <div id="victory-content"></div>
+    </div>
+
+    <!-- Map Screen -->
+    <div id="map-screen" class="screen hidden">
+      <div class="map-header">
+        <h2 class="rainbow-text">Your Adventure Map</h2>
+        <button class="btn btn-secondary" onclick="App.continuePlaying()">Back to Playing</button>
+      </div>
+      <div id="map-stats"></div>
+      <div id="progress-map"></div>
+    </div>
+
+    <!-- Settings Screen -->
+    <div id="settings-screen" class="screen hidden">
+      <div class="settings-content">
+        <h2>Settings</h2>
+        <div class="setting-row">
+          <label for="sound-toggle">Sound Effects</label>
+          <input type="checkbox" id="sound-toggle" onchange="App.toggleSound()">
+        </div>
+        <div class="setting-row">
+          <button class="btn btn-secondary" onclick="App.goHome()">Back to Home</button>
+        </div>
+        <div class="setting-row reset-row">
+          <button class="btn btn-danger" onclick="App.resetProgress()">Reset All Progress</button>
+          <div id="reset-confirm" class="hidden">
+            <p class="reset-warning">Are you sure? This will erase ALL progress!</p>
+            <button class="btn btn-danger" onclick="App.confirmReset()">Yes, Reset Everything</button>
+            <button class="btn btn-secondary" onclick="App.resetProgress()">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts (order matters) -->
+  <script src="js/storage.js"></script>
+  <script src="js/levels.js"></script>
+  <script src="js/problems.js"></script>
+  <script src="js/sounds.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/teaching.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

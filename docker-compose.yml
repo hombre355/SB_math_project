@@ -1,0 +1,12 @@
+services:
+  math-adventure:
+    build: .
+    container_name: math-adventure
+    ports:
+      - "8080:80"       # NAS port 80 is usually taken — use 8080 externally
+    restart: always     # auto-starts after NAS reboot or container crash
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
