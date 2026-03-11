@@ -57,6 +57,7 @@ jobs:
           key: ${{ secrets.NAS_SSH_KEY }}
           port: 9020
           script: |
+            mkdir -p /opt/sb-math
             cd /opt/sb-math
             docker compose pull
             docker compose up -d
