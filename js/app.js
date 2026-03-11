@@ -18,6 +18,18 @@ const App = {
     // Set up other buttons
     this._setupButtons();
 
+    // Triple-click on header title to open parent mode
+    let titleClickCount = 0, titleClickTimer;
+    document.getElementById('app-title').addEventListener('click', () => {
+      titleClickCount++;
+      clearTimeout(titleClickTimer);
+      titleClickTimer = setTimeout(() => { titleClickCount = 0; }, 600);
+      if (titleClickCount >= 3) {
+        titleClickCount = 0;
+        App.showParentMode();
+      }
+    });
+
     // Show appropriate start screen
     if (Storage.hasExistingProgress()) {
       this._showWelcomeBack();
@@ -155,6 +167,28 @@ const App = {
   confirmReset() {
     this.state = Storage.reset();
     this._showFirstTime();
+  },
+
+  showParentMode() {
+    const grid = document.getElementById('parent-lesson-grid');
+    grid.innerHTML = '';
+    LEVELS.forEach(level => {
+      const card = document.createElement('div');
+      card.className = 'parent-lesson-card' + (level.operation === '+' ? ' plc-addition' : ' plc-subtraction');
+      card.innerHTML = `
+        <div class="plc-id">Level ${level.id}</div>
+        <div class="plc-name">${level.name}</div>
+        <div class="plc-desc">${level.description}</div>
+        <div class="plc-meta">${level.operation === '+' ? 'Addition' : 'Subtraction'} · ${level.display}</div>
+      `;
+      card.addEventListener('click', () => {
+        Sounds.resume();
+        Game.init(App.state);
+        Game.startLevel(level.id);
+      });
+      grid.appendChild(card);
+    });
+    UI.showScreen('parent-screen');
   },
 
   goHome() {

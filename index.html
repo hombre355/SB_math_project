@@ -26,7 +26,7 @@
         <button class="btn btn-icon" onclick="App.goHome()" title="Home">&#x1F3E0;</button>
       </div>
       <div class="header-center">
-        <h1 class="app-title rainbow-text">Math Adventure</h1>
+        <h1 id="app-title" class="app-title rainbow-text">Math Adventure</h1>
       </div>
       <div class="header-right">
         <button class="btn btn-icon btn-read-aloud" id="read-aloud-btn" onclick="Speech.toggle()" title="Read aloud">&#x1F50A;</button>
@@ -96,6 +96,16 @@
       </div>
       <div id="map-stats"></div>
       <div id="progress-map"></div>
+    </div>
+
+    <!-- Parent Screen -->
+    <div id="parent-screen" class="screen hidden">
+      <div class="parent-content">
+        <h2 class="rainbow-text">Parent Mode — Lesson Selector</h2>
+        <p class="parent-subtitle">Tap any lesson to jump straight to it</p>
+        <div id="parent-lesson-grid"></div>
+        <button class="btn btn-secondary" onclick="App.goHome()">← Back</button>
+      </div>
     </div>
 
     <!-- Settings Screen -->
