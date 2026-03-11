@@ -44,6 +44,20 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    permissions:
+      packages: write
+
+    steps:
+      - name: Delete old container versions (keep latest 2)
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: sb_math_project
+          package-type: container
+          min-versions-to-keep: 2
+
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-push
