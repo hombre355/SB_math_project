@@ -55,6 +55,7 @@ jobs:
           host: ${{ secrets.NAS_HOST }}
           username: ${{ secrets.NAS_USER }}
           key: ${{ secrets.NAS_SSH_KEY }}
+          port: 9020
           script: |
             cd /opt/sb-math
             docker compose pull
