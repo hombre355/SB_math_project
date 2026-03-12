@@ -149,6 +149,8 @@ const App = {
     UI.showScreen('settings-screen');
     const soundToggle = UI.$('#sound-toggle');
     if (soundToggle) soundToggle.checked = this.state.settings.sound;
+    const versionEl = UI.$('#settings-version');
+    if (versionEl) versionEl.textContent = APP_VERSION;
   },
 
   toggleSound() {

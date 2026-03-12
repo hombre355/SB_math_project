@@ -11,8 +11,36 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version in version.js
+        run: |
+          CURRENT=$(grep -o "'v[0-9]*\.[0-9]*'" js/version.js | tr -d "'")
+          MINOR=$(echo "$CURRENT" | cut -d. -f2)
+          NEW="v1.$((MINOR + 1))"
+          sed -i "s/$CURRENT/$NEW/" js/version.js
+          echo "Bumped $CURRENT → $NEW"
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add js/version.js
+          git commit -m "chore: bump version [skip ci]" || echo "No changes to commit"
+          git push
+
   build-and-push:
     runs-on: ubuntu-latest
+    needs: bump-version
     permissions:
       contents: read
       packages: write
@@ -20,6 +48,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
