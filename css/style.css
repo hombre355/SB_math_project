@@ -1400,6 +1400,16 @@ body {
   font-size: 1.1rem;
 }
 
+.version-row {
+  justify-content: center;
+  border-bottom: none;
+}
+
+.version-label {
+  font-size: 0.85rem;
+  color: #a0a0b0;
+}
+
 #sound-toggle {
   width: 50px;
   height: 26px;
