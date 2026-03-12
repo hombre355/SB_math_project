@@ -94,6 +94,9 @@ const UI = {
     const s2 = String(num2).padStart(maxDigits, '\u00A0');
     const placeNames = ['ones', 'tens', 'hundreds', 'thousands', 'ten-thousands'];
 
+    const answerLen = String(operation === '+' ? num1 + num2 : num1 - num2).length;
+    const totalBoxes = Math.max(maxDigits, answerLen);
+
     let html = '<div class="column-problem">';
     // Carry/borrow input row (above the numbers)
     html += '<div class="column-row carry-row" id="carry-boxes">';
@@ -136,8 +139,6 @@ const UI = {
 
     // Answer boxes
     html += '<div class="column-row answer-row" id="answer-boxes">';
-    const answerLen = String(operation === '+' ? num1 + num2 : num1 - num2).length;
-    const totalBoxes = Math.max(maxDigits, answerLen);
     for (let i = 0; i < totalBoxes; i++) {
       html += `<span class="digit-box answer-box" data-pos="${totalBoxes - 1 - i}"></span>`;
     }
