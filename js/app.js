@@ -18,6 +18,9 @@ const App = {
     // Set up other buttons
     this._setupButtons();
 
+    // Make mascot draggable
+    this._setupMascotDrag();
+
     // Triple-click on header title to open parent mode
     let titleClickCount = 0, titleClickTimer;
     document.getElementById('app-title').addEventListener('click', () => {
@@ -241,6 +244,61 @@ const App = {
         Game.submit();
       }
     });
+  },
+
+  _setupMascotDrag() {
+    const area = document.getElementById('mascot-area');
+    const mascot = document.getElementById('mascot');
+    if (!area || !mascot) return;
+
+    // Restore saved position
+    try {
+      const saved = JSON.parse(localStorage.getItem('mascot-pos'));
+      if (saved) {
+        area.style.left = saved.left + 'px';
+        area.style.top = saved.top + 'px';
+        area.style.bottom = 'auto';
+      }
+    } catch (e) {}
+
+    let dragging = false, startX, startY, origLeft, origTop;
+
+    const dragStart = (x, y) => {
+      dragging = true;
+      startX = x;
+      startY = y;
+      const rect = area.getBoundingClientRect();
+      origLeft = rect.left;
+      origTop = rect.top;
+      area.style.left = origLeft + 'px';
+      area.style.top = origTop + 'px';
+      area.style.bottom = 'auto';
+      mascot.classList.add('dragging');
+    };
+
+    const dragMove = (x, y) => {
+      if (!dragging) return;
+      area.style.left = (origLeft + x - startX) + 'px';
+      area.style.top = (origTop + y - startY) + 'px';
+    };
+
+    const dragEnd = () => {
+      if (!dragging) return;
+      dragging = false;
+      mascot.classList.remove('dragging');
+      localStorage.setItem('mascot-pos', JSON.stringify({
+        left: parseFloat(area.style.left),
+        top: parseFloat(area.style.top)
+      }));
+    };
+
+    mascot.addEventListener('mousedown', e => { e.preventDefault(); dragStart(e.clientX, e.clientY); });
+    document.addEventListener('mousemove', e => dragMove(e.clientX, e.clientY));
+    document.addEventListener('mouseup', dragEnd);
+
+    mascot.addEventListener('touchstart', e => { e.preventDefault(); dragStart(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    document.addEventListener('touchmove', e => { if (dragging) { e.preventDefault(); dragMove(e.touches[0].clientX, e.touches[0].clientY); } }, { passive: false });
+    document.addEventListener('touchend', dragEnd);
   }
 };
 

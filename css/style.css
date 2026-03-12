@@ -420,6 +420,16 @@ body {
   pointer-events: none;
 }
 
+#mascot {
+  pointer-events: auto;
+  cursor: grab;
+  user-select: none;
+}
+
+#mascot.dragging {
+  cursor: grabbing;
+}
+
 @media (max-width: 400px) {
   #mascot-area {
     bottom: 260px;
